@@ -9,6 +9,7 @@ source "$UTIL_FOLDER/args.fix-whitespace"
 remoteAccount="$1"
 source "$UTIL_FOLDER/remote-account.validate"
 server=$(remote_account_validate "$remoteAccount")
+if [ $? -ne 0 ] ; then exit 1; fi
 
 source "$UTIL_FOLDER/known-host.register-if-needed"
 known_host_register_if_needed "$server"

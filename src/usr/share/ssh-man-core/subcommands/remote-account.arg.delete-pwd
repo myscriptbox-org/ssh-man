@@ -10,6 +10,7 @@ remoteAccount="$1"
 
 source "$UTIL_FOLDER/remote-account.validate"
 server=$(remote_account_validate "$remoteAccount")
+if [ $? -ne 0 ] ; then exit 1; fi
 
 source "$UTIL_FOLDER/file.delete-record"
 file_delete_record "$SSH_FOLDER/remote_accounts" "$remoteAccount" 

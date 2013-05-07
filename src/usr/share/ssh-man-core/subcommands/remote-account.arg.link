@@ -12,6 +12,7 @@ source "$UTIL_FOLDER/args.fix-whitespace"
 remoteAccount="$1"
 source "$UTIL_FOLDER/remote-account.validate"
 server=$(remote_account_validate "$remoteAccount")
+if [ $? -ne 0 ] ; then exit 1; fi
 
 #read password
 IFS=' ' read -r useragain password < <(cat "$SSH_FOLDER/remote_accounts" | grep "$remoteAccount")
