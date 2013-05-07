@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+# check that the file exists
+function file_assert_exists
+{
+	filePath="$1"
+	if [ ! -f "$filePath" ] ; then
+		echo "ERROR: $filePath does not exist" >&2
+		exit 1
+	fi
+}
+

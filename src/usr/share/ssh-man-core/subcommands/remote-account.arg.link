@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/file.assert-exists"
+file_assert_exists "$SSH_FOLDER/id_rsa.pub"
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+remoteAccount="$1"
+source "$UTIL_FOLDER/remote-account.validate"
+server=$(remote_account_validate "$remoteAccount")
+
+#read password
+IFS=' ' read -r useragain password < <(cat "$SSH_FOLDER/remote_accounts" | grep "$remoteAccount")
+
+source "$UTIL_FOLDER/known-host.register-if-needed"
+known_host_register_if_needed "$server"
+
+#preparing to copy local key to remote authorized keys
+REMOTE_COMMAND='
+umask 077;
+test -d ~/.ssh || mkdir ~/.ssh ;
+cat >> ~/.ssh/authorized_keys ;
+cat ~/.ssh/authorized_keys | sort | uniq > ~/.ssh/authorized_keys.tmp ; 
+rm -f ~/.ssh/authorized_keys ;
+mv ~/.ssh/authorized_keys.tmp ~/.ssh/authorized_keys
+'
+export SSHPASS="$password"
+
+# -o "BatchMode yes" ==> consistently fails here
+
+# switch off batch mode if it is enabled
+batchMode=$($THIS_SCRIPT config.batch-mode -show)
+if [[ $batchMode == 'yes' ]] ; then
+        $THIS_SCRIPT config.batch-mode -unset
+fi
+
+echo "linking $remoteAccount ... "
+
+#execute transfer
+cat "$SSH_FOLDER/id_rsa.pub" |  sshpass -e ssh $remoteAccount "$REMOTE_COMMAND" || exit 1
+
+# switch on batch mode if was is enabled
+if [[ $batchMode == 'yes' ]] ; then
+        $THIS_SCRIPT config.batch-mode -set
+fi
+
+#store local key in agent
+source "$UTIL_FOLDER/own-keys.load"
+

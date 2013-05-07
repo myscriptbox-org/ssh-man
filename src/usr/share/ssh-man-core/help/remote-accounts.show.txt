@@ -1,0 +1,5 @@
+This command lists all the remote accounts in the database. Example output:{br}
+    Remote Account      Password 
+    john@doe.com        john125!     
+    john@myserv.com     john122??
+

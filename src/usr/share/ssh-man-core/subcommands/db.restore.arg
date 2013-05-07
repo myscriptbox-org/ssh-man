@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+backupFilePath="$1"
+
+#check if file exists
+source "$UTIL_FOLDER/file.assert-exists"
+file_assert_exists "$backupFilePath"
+
+#creates a copy of the database in $TMP_FOLDER
+source "$UTIL_FOLDER/folder.create-tmp-copy"
+folder_create_tmp_copy "$SSH_FOLDER"
+chmod 700 "$TMP_FOLDER"
+
+#unzip
+unzip -q "$backupFilePath" -d "$TMP_FOLDER"
+
+#delete db
+source "$UTIL_FOLDER/folder.delete"
+folder_delete "$SSH_FOLDER"
+
+#put the db folder in its final destination
+mv "$TMP_FOLDER" "$SSH_FOLDER"
+

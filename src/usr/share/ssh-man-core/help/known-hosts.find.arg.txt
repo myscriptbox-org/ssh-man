@@ -1,0 +1,2 @@
+This command checks if a known host is registered in the database. If so, it returns the fingerprint of its public key. If not, it returns nothing.
+

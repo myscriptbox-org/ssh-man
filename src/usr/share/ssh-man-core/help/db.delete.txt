@@ -1,0 +1,2 @@
+This command deletes the entire ssh user-level configuration database.
+

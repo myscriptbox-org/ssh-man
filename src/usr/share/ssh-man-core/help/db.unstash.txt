@@ -1,0 +1,2 @@
+This command puts back the copy of the ssh user-level configuration database made earlier with '{program} db -stash'. Use it if you want to undo the changes made since the last time you stashed the database.
+

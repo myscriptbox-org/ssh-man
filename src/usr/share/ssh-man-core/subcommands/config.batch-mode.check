@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+outputFormat="%-20s %-5s\n"
+
+# (1) check that ssh-agent is running
+
+agentProcess=$(ps ax | grep ssh-agent | grep -v grep)
+if [[ $agentProcess == '' ]] ; then
+	isAgentRunning="no"
+else
+	isAgentRunning="yes"
+fi
+printf "$outputFormat" "agent running" "$isAgentRunning"
+
+# (2) check that key has been added to ssh-agent 
+
+ownKeySaved=$($THIS_SCRIPT own-keys -show)
+ownKeyLoaded=$(ssh-add -l | grep "$ownKeySaved")
+if [[ $ownKeyLoaded == '' ]] ; then
+	isKeyLoaded="no"
+else
+	isKeyLoaded="yes"
+fi
+printf "$outputFormat" "key loaded" "$isKeyLoaded"
+
+# (3) check that batch mode is enabled
+
+batchModeEnabled=$($THIS_SCRIPT config.batch-mode -show)
+printf "$outputFormat" "batch mode enabled" "$batchModeEnabled"
+
+# (4) overall 
+
+if [ "$isAgentRunning" = "yes" ] && [ "$isKeyLoaded" = "yes" ] && [ "$batchModeEnabled" = "yes" ] ; then
+	overall="ok"
+else
+	overall="nok"
+fi
+
+printf "$outputFormat" "overall" "$overall"
+

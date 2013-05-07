@@ -1,0 +1,4 @@
+This command shows the email registered in the own public key. Example:{br}
+    $ {program} own-keys.email -show{br}
+    john@doe.com
+

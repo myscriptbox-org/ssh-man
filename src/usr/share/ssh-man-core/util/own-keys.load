@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+#store local key in agent
+ssh-add > /dev/null 2>&1
+

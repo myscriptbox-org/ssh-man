@@ -1,0 +1,12 @@
+By default, {program} looks for the ssh security database in {b}~/.ssh{/b}.
+[[config]]
+This file contains the user-level configuration options for {b}ssh{/b}; {program} switch on and off {b}BatchMode{/b} by adding or removing the corresponding configuration option in this file.
+[[id_rsa]]
+This file contains the own private ssh key. This file must be present for approximately anything in {b}ssh{/b} to work properly.
+[[id_rsa.pub]]
+This file contains the own public ssh key. This file is copied to the remote account's {b}authorized_keys{/b} file when establishing a permanent link.
+[[known_hosts]]
+For each remote server, it contains an entry with their key and IP address. For {b}BatchMode{/b} to function properly, the remote server's public key must be present in this file.
+[[remote_accounts]]
+This file contains one entry per remote account along with its password. You can backup and remove the file after establishing the permanent remote links. If you ever need to re-establish the links, you will need to bring back this file.
+

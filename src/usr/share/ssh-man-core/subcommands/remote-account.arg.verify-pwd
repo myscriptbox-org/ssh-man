@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+remoteAccount="$1"
+source "$UTIL_FOLDER/remote-account.validate"
+server=$(remote_account_validate "$remoteAccount")
+
+source "$UTIL_FOLDER/known-host.register-if-needed"
+known_host_register_if_needed "$server"
+
+#read password
+IFS=' ' read -r useragain password < <(cat "$SSH_FOLDER/remote_accounts" | grep "$remoteAccount")
+
+export SSHPASS="$password"
+# -o "BatchMode yes" ==> consistently fails here
+
+# switch off batch mode if it is enabled
+batchMode=$($THIS_SCRIPT config.batch-mode -show)
+if [[ $batchMode == 'yes' ]] ; then
+        $THIS_SCRIPT config.batch-mode -unset  > /dev/null 2>&1
+fi
+
+sshpass -e ssh $remoteAccount 'ls -l | head -n 1 ' > /dev/null 2>&1
+err=$?
+
+# switch on batch mode if was is enabled
+if [[ $batchMode == 'yes' ]] ; then
+        $THIS_SCRIPT config.batch-mode -set  > /dev/null 2>&1
+fi
+
+if [ $err -ne 0 ] ; then
+	echo "invalid"
+else
+	echo "valid"
+fi
+
+exit 0
+
+

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+# switch off batch mode if it is enabled
+batchMode=$($THIS_SCRIPT config.batch-mode -show)
+if [[ $batchMode == 'yes' ]] ; then
+        $THIS_SCRIPT config.batch-mode -unset
+fi
+
+source "$UTIL_FOLDER/remote-accounts.verify"
+remote_accounts_verify -verify-pwd
+
+# switch on batch mode if was is enabled
+if [[ $batchMode == 'yes' ]] ; then
+        $THIS_SCRIPT config.batch-mode -set
+fi
+

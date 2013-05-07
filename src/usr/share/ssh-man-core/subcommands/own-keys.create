@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+email="$1"
+
+#email could be blank
+if [[ $email == "" ]] ; then
+        comment=""
+else
+        comment="-C $email"
+fi
+
+source "$UTIL_FOLDER/file.delete"
+file_delete "$SSH_FOLDER/id_rsa"
+file_delete "$SSH_FOLDER/id_rsa.pub"
+
+# -q ==> silence
+# -t rsa ==> encryption type
+# -f filename ==> location to generate to
+# -N password ==> no password
+# -C comment ==> email address
+
+ssh-keygen -q -t rsa -f "$SSH_FOLDER/id_rsa" -N "" $comment
+

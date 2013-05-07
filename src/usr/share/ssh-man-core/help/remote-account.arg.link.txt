@@ -1,0 +1,4 @@
+This command will link the device to a remote account. Example:{br}
+    {program} remote-account john@doe.com -link{br}
+This is effected by copying the public own key to the authorized keys in the remote account. The result is that you may login from this device into the account on the other device without supplying a password.
+

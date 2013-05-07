@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+#
+# final output
+#
+# Produces the final message for the command
+#
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Released into the public domain
+#-------------------------------------------------------
+#declare variable as array
+declare -a actions_producing_their_own_output
+
+#read array from config file
+while read action; do
+	actions_producing_their_own_output+=("$action")
+done < $(dirname "$FINAL_MSG_FOLDER")/actions.output-producing.txt
+
+#check if action will produce its own output
+action_produces_its_own_output='no'
+for action in "${actions_producing_their_own_output[@]}"
+do
+    if [[ $action == $ACTION ]] ; then
+	action_produces_its_own_output='yes'
+	exit $SUBCOMMAND_RETCODE
+    fi
+done
+
+if [ $SUBCOMMAND_RETCODE -eq 0 ] ; then
+	echo "$OBJECT_PATH/$ACTION executed."
+	exit 0
+else
+	echo "$OBJECT_PATH/$ACTION failed."
+	exit $SUBCOMMAND_RETCODE
+fi
+

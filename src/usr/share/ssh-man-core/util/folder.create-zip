@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+function folder_create_zip
+{
+	folderPath="$1"
+	zipFilePath="$2"
+	pushd "$folderPath" 1>&2 > /dev/null
+	zip --recurse-paths --quiet "$zipFilePath" .
+	popd  1>&2 > /dev/null
+}
+

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/file.replace-record"
+file_replace_record "$SSH_FOLDER/config" "BatchMode" "BatchMode yes"
+

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+source "$UTIL_FOLDER/file.assert-exists"
+file_assert_exists "$SSH_FOLDER/id_rsa.pub"
+
+source "$UTIL_FOLDER/own-keys.load"
+source "$UTIL_FOLDER/args.fix-whitespace"
+remoteAccount="$1"
+source "$UTIL_FOLDER/remote-account.validate"
+server=$(remote_account_validate "$remoteAccount")
+
+source "$UTIL_FOLDER/known-host.register-if-needed"
+known_host_register_if_needed "$server"
+
+ssh -o 'BatchMode yes' $remoteAccount  'ls -l | head -n 1 ' > /dev/null 2>&1
+err=$?
+
+if [ $err -ne 0 ] ; then
+	echo "invalid"
+else
+	echo "valid"
+fi
+
+exit 0
+

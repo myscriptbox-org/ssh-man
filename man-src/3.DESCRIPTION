@@ -1,0 +1,33 @@
+[[config.batch-mode]]
+Only if all conditions for {b}BatchMode{/b} are fulfilled, you will be able to execute scripts in a remote account without supplying a password. Otherwise, the attempt will either fail or else wait indefinitely for user input. It is not a good practice to build systems that execute automated actions on other servers with no guarantee that ssh will not wait for user input.
+
+[[db]]
+Use this object path to manipulate the entire database in one go, mostly for backing up, restoring, or deleting the entire database of security credentials.
+
+[[stash]]
+before making changes to the database, you may want to ensure that you can undo your changes. Stash your database. At any time you can always unstash back its stashed version.
+
+[[known-host]]
+A known host is a server domain name along with its IP address for which you have retrieved the public key previously. From there, as a security measure, ssh will expect the known host to keep its existing IP address and its existing key. 
+
+[[known-hosts]]
+Use actions at the level of the {b}known-hosts{/b} can manipulate the entire known hosts collection with one command.
+
+[[own-keys]]
+Use actions at the level of your {b}own-keys{/b} to manipulate both private and public key.
+
+[[own-keys.email]]
+The {b}own-keys{/b} have hold an email address. Use actions at this level to manipulate the email address for your own keys.
+
+[[own-keys.private]]
+Use actions at this level to manipulate your own private key.
+
+[[own-keys.public]]
+Use actions at this level to manipulate your own public key.
+
+[[remote-account]]
+A {b}remote account{/b} is an account on a remote server for which you have username and password. You can create or remove a link between your own device and this remote account. A link is tied to your own private key.
+
+[[remote-accounts]]
+Use actions at this level to manipulate the entire collection of {b}remote accounts{/b}. One way of manipulating them, could consist in creating links for all accounts, then back up your db, and then delete the passwords. Do not ask me where to store your backup with passwords safely. The problem is inherently unsolvable. And yes, it may be a problem to remember them. And yes, you may need these passwords again, even after creating and verifying all the links to the remote accounts.
+

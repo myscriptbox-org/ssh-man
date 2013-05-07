@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+#host unknown, register it first
+function known_host_register_if_needed
+{
+        server="$1"
+        key=$($THIS_SCRIPT known-hosts -find "$server")
+        if [[ $key == '' ]] ; then
+                $THIS_SCRIPT known-host "$server" -add > /dev/null 2>&1
+	        err=$?
+	        if [ $err -ne 0 ] ; then
+                        echo "Cannot register known host $server" >&2
+		        exit 1		
+	        fi
+        fi
+}
+

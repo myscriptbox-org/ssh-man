@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/folder.assert-exists"
+folder_assert_exists "$SSH_FOLDER"
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+backupFilePath="$1"
+
+source "$UTIL_FOLDER/file.absolute-path"
+backupFilePath=$(file_absolute_path "$backupFilePath")
+
+source "$UTIL_FOLDER/file.delete"
+base=$(basename "$backupFilePath") 
+ext=${base##*.}
+if [ "$ext" = "zip" ] ; then
+        fileToDelete="$backupFilePath"
+else
+        fileToDelete="$backupFilePath.zip"
+fi
+file_delete "$fileToDelete"
+
+source "$UTIL_FOLDER/folder.create-zip"
+folder_create_zip "$SSH_FOLDER" "$backupFilePath"
+

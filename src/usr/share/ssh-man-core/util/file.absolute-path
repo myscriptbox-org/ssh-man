@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+function file_absolute_path
+{
+	filePath="$1"
+	if [[ ${filePath:0:1} != '/' ]] ; then
+		filePath="$PWD/$filePath"
+	fi
+	echo "$filePath"
+}
+

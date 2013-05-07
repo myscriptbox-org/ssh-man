@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+# Fix possible whitespace problems in the arguments
+
+args=''
+for i in "$@"
+do
+    args="$args \"$i\""
+done
+eval set -- $args
+

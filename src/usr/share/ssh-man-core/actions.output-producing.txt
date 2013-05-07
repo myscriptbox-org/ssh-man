@@ -1,0 +1,9 @@
+fingerprint
+find
+show
+verify-link
+verify-links
+verify-pwd
+check
+exists
+

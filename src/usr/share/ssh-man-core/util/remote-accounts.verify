@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/file.assert-exists"
+file_assert_exists "$SSH_FOLDER/remote_accounts"
+
+function remote_accounts_verify
+{
+        option="$1"
+        outputFormat="%-30s %-10s\n"
+        while read record; do
+                #read two space-separated fields
+                IFS=' ' read -r remoteAccount password < <(echo "$record")
+                result=$($THIS_SCRIPT remote-account "$remoteAccount" $option || true)
+                printf "$outputFormat" "$remoteAccount" "$result" 
+        done < <(cat "$SSH_FOLDER/remote_accounts")
+}
+

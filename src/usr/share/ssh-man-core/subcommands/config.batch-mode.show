@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+touch "$SSH_FOLDER/config" 
+
+record=$(cat "$SSH_FOLDER/config" | grep 'BatchMode') #grab the line containing the record
+IFS=' ' read -r BatchMode BatchModeValue < <(echo "$record") #read two space-separated fields
+if [[ $BatchModeValue != '' ]] ; then
+        echo "$BatchModeValue"
+else
+        echo "no" #this is the default
+fi
+

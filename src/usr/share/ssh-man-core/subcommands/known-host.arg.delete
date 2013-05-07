@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+
+hostname="$1"
+
+ssh-keygen -R "$hostname" -f "$SSH_FOLDER/known_hosts" > /dev/null 2>&1 #remove known hostname
+err=$? #store error code
+if [ "$err" -ne 0 ] ; then
+        echo "ERROR: cannot delete known host '$hostname'" >&2
+fi
+
+rm -f "$SSH_FOLDER/known_hosts.old"
+

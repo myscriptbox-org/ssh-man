@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+# Restore a particular file from a backup zip
+
+function file_replace_record
+{
+	filePath="$1"
+	key="$2"
+	newRecord="$3"
+
+	if [ -f "$filePath" ] ; then 
+		cat "$filePath" | grep -v "$key" > "$filePath.tmp" #remove the record, if present
+		echo "$newRecord" >> "$filePath.tmp" #add the new record
+		rm -f "$filePath" #remove the old file
+		mv "$filePath.tmp" "$filePath" 
+	else
+		echo "$newRecord" > "$filePath" #add the new record to the empty file
+	fi
+}
+

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+rm -f "$SSH_FOLDER/known_hosts"
+rm -f "$SSH_FOLDER/known_hosts.old"
+

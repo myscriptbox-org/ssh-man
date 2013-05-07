@@ -1,0 +1,4 @@
+This command unlinks a remote account. Example:{br}
+    {program} remote-account john@doe.com -unlink{br}
+It does this by removing the public key from the account's authorized keys. From there, passwordless login will no longer be possible from this database.
+

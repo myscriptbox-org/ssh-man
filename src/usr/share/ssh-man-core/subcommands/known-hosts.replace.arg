@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+source "$UTIL_FOLDER/file.restore"
+backupFilePath="$1"
+file_restore "$backupFilePath" "known_hosts"
+

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+#create tmp copy folder
+
+function folder_create_tmp_copy
+{
+	folder="$1"
+	TMP_FOLDER="$folder.tmp"
+	if [ -d "$TMP_FOLDER" ] ; then
+		rm -rf "$TMP_FOLDER"
+	fi
+	mkdir "$TMP_FOLDER"
+}
+

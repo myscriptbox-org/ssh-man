@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/file.assert-exists"
+file_assert_exists "$SSH_FOLDER/id_rsa.pub"
+
+{ read field1; read field2; read email; } < <( cat "$SSH_FOLDER/id_rsa.pub" | awk '{print $1; print $2; print $3;}')
+echo "$email"
+

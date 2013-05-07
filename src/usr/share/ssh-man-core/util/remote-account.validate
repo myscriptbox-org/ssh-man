@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+function remote_account_validate
+{
+        remoteAccount="$1"
+
+        hasAtSign=$(echo "$remoteAccount" | grep '@')
+        if [ "$hasAtSign" = "" ] ; then
+                echo "ERROR: user@server expected." >&2
+                exit 1
+        fi
+         
+        user=$(echo "$remoteAccount" | sed 's/\(.*\)@.*/\1/')
+        server=$(echo "$remoteAccount" | sed 's/.*@\(.*\)/\1/')
+
+        #check that both user and server are present
+        if [[ $user == '' ]] || [[ $server == '' ]]  ; then
+                echo "ERROR: user@server expected." >&2
+                exit 1
+        fi
+
+        #check if it contains a space
+        if [[ "$remoteAccount" != "${remoteAccount% *}" ]]; then
+                echo "ERROR: user@server may not contain spaces." >&2
+                exit 1
+        fi
+        
+        echo "$server"
+}
+

@@ -1,0 +1,2 @@
+This command links all the remote accounts in the database.
+

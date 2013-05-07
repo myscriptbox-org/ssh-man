@@ -1,0 +1,4 @@
+This command adds or replaces a remote account. Example:{br}
+    {program} remote-account john@doe.com -set-pwd 'john125!'{br}
+Use quotes around the password if it contains non alphanumeric characters. From there, passwordless login will be possible from this database.
+

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/file.assert-exists"
+file_assert_exists "$SSH_FOLDER/id_rsa.pub"
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+
+#optional argument
+email="$1"
+
+#read the first two fields in the public key record
+{ read field1; read field2; } < <( cat "$SSH_FOLDER/id_rsa.pub" | awk '{print $1; print $2;}')
+
+#write 3 fields in the new public key record
+echo -n "$field1 " > "$SSH_FOLDER/id_rsa.pub"
+echo -n "$field2 " >> "$SSH_FOLDER/id_rsa.pub"
+echo    "$email" >> "$SSH_FOLDER/id_rsa.pub"
+

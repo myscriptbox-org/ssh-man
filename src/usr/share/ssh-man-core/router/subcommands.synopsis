@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#-----------------------------------------------------------------
+#
+# subcommand router
+#
+# produces the synopsis by looking at the subcommands folder
+#
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Released into the public domain
+#-----------------------------------------------------------------
+
+source "$ROUTER_FOLDER/script-filename.parse"
+
+while read fileName; do
+	# general logic ot=objecttype
+	# ot[.arg].ot[.arg]...ot[.arg].action[.arg[s]]
+	# becomes: ot.ot.ot...ot [object] [object] ... [object] -action [arg[s]]
+
+	# so we match for any.action or any.action.arg any.action.args
+
+	action=$(script_filename_action "$fileName")
+	actionArg=$(script_filename_actionarg "$fileName")
+	if [[ $actionArg != '' ]] ; then
+		actionArg="[$actionArg]"
+	fi
+	objectPathSegment=$(script_filename_objectpathsegment "$fileName")
+
+	#determine how many object identifying args we need to request
+        argCount=$(objectpathsegment_argcount "$objectPathSegment")
+        objectArgs=$(yes '[obj] ' | head -n$argCount)
+	objectArgs=$(echo "$objectArgs" | tr --delete '\n')
+	#remove all object identifying args from the object path
+        objectPath=$(objectpathsegment_to_objectpath "$objectPathSegment")
+
+	#output synopsis
+        echo "$objectPath $objectArgs-$action ${actionArg}"
+
+done < <(ls "$SUBCOMMANDS_FOLDER")
+

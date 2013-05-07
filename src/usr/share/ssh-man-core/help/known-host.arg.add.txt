@@ -1,0 +1,4 @@
+This command adds a known host to the database. Example:{br}
+    {program} known-host yahoo.com -add{br}
+If the known-host exists already, it will be replaced with its current IP address and current SSH key.
+

@@ -1,0 +1,8 @@
+This command shows the status of a remote account. Example:{br}
+    {program} remote-account john@doe.com -show{br}
+    remote account      : john@doe.com{br}
+    password            : john125!{br}
+    pwd valid           : valid{br}
+    link valid          : invalid{br}
+The command also verifies if the password is valid and if the link is valid.
+

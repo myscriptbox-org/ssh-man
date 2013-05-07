@@ -1,0 +1,11 @@
+This command will check if all conditions are met for ssh to be able to run in batch mode.
+Example output:{br}
+    agent running        yes{br}
+    key loaded           yes{br}
+    batch mode enabled   no{br}
+    overall              nok{br}
+{b}agent running{/b}: {b}no{/b} means that the authentication agent, {b}ssh-agent{/b}, is not running. Consequently, it will not supply the private key to the {b}ssh{/b} program when it needs to authenticate to a remote ssh server. In batch mode {b}ssh{/b} will fail. In interactive mode, {b}ssh{/b} may stop for user interaction.{br}
+{b}key loaded{/b}: {b}no{/b} means that the authentication agent has not loaded the private key. It needs to be loaded with {b}ssh-add{/b}.
+{b}batch mode enabled{/b}: {b}no{/b} means that {b}ssh{/b} will potentially stop for user interaction when dealing with a remote ssh server that is not a known host or which has not been linked through key exchange.{br}
+{b}overall{/b}: {b}no{/b} means that one of the conditions required, has not been satisfied.
+

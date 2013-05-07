@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+#remove stash
+source "$UTIL_FOLDER/folder.delete"
+folder_delete "$SSH_STASHED_FOLDER"
+

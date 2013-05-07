@@ -1,0 +1,2 @@
+This command prints the public key finger print for the known host.
+

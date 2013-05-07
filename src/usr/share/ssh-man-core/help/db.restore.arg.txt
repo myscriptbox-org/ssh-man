@@ -1,0 +1,4 @@
+This command restores the ssh user-level configuration database from the zip file supplied as an argument. Example:{br}
+    {program} db -restore mybackup.zip{br}
+will restore mybackup.zip.
+

@@ -1,0 +1,3 @@
+This command replaces the remote accounts in the database by the ones in a backup file. Example:{br}
+    {program} remote-accounts -replace mybackup.zip
+

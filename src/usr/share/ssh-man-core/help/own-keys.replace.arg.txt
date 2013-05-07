@@ -1,0 +1,3 @@
+This command replaces the own keys in the database by the ones in the given backup file. Example:{br}
+    {program} own-keys -replace mybackup.zip
+

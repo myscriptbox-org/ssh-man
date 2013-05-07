@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+#
+# script filename parser
+#
+# Parses a script file name into constituent parts
+#
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Released into the public domain
+#-------------------------------------------------------
+
+function script_filename_actionarg
+{
+	fileName="$1"
+	finalSegment=${fileName##*.} #delete longest string from the front
+	if [ "$finalSegment" = 'args' ] || [ "$finalSegment" = 'arg' ]  ; then
+		echo "$finalSegment"
+	else
+		echo ""
+	fi
+}
+
+function script_filename_action
+{
+	fileName="$1"
+	finalSegment=${fileName##*.} #delete longest string from the front
+	if [ "$finalSegment" = 'args' ] || [ "$finalSegment" = 'arg' ]  ; then
+		objectPathAndAction=${fileName%.*} #delete shortest string from the back
+		action=${objectPathAndAction##*.} #delete longest string from the front
+	else
+		action="$finalSegment"
+	fi
+	echo "$action"
+}
+
+function script_filename_objectpathsegment
+{
+	fileName="$1"
+	finalSegment=${fileName##*.} #delete longest string from the front
+	if [ "$finalSegment" = 'args' ] || [ "$finalSegment" = 'arg' ]  ; then
+		objectPathAndAction=${fileName%.*} #delete shortest string from the back
+		objectPathSegment=${objectPathAndAction%.*} #delete shortest string from the back
+	else
+		objectPathSegment=${fileName%.*} #delete shortest string from the back
+	fi
+	echo "$objectPathSegment"
+}
+
+function objectpathsegment_argcount
+{
+	objectPathSegment="$1"
+        echo "$objectPathSegment" | grep -o ".arg" | wc -l
+}
+
+function objectpathsegment_to_objectpath
+{
+	objectPathSegment="$1"
+        objectPath=${objectPathSegment//\.args/}
+        objectPath=${objectPath//\.arg/}
+	echo "$objectPath"
+}
+

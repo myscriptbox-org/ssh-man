@@ -1,0 +1,2 @@
+This command disables batch mode in the user's configuration. It is used by the '{program} remote-account -link' command to supply the password required for linking a remote server. In batch mode, it is not possible to supply a password to {b}ssh{/b}.
+

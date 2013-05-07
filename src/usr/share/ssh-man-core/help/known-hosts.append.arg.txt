@@ -1,0 +1,2 @@
+This command appends the known hosts from a backup file to the database.
+

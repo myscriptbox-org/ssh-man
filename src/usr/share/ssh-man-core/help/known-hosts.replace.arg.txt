@@ -1,0 +1,3 @@
+This command replaces the known hosts in the database from the known hosts in a backup file. Example:{br}
+    {program} known-hosts -replace mybackup.zip{br}
+

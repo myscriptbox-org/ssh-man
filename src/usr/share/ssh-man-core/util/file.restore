@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+# Restore a particular file from a backup zip
+
+function file_restore
+{
+        backupFilePath="$1"
+        file="$2"
+        source "$UTIL_FOLDER/folder.create-tmp-copy"
+        folder_create_tmp_copy "$SSH_FOLDER"
+        unzip -q "$backupFilePath" "$file" -d "$TMP_FOLDER"
+
+        err=$?
+        if [ $err -ne 0 ]; then
+                echo "ERROR: cannot unzip $backupFilePath"  >&2
+                exit 1
+        fi
+
+        if [[ -f "$SSH_FOLDER/$file" ]] ; then
+                rm "$SSH_FOLDER/$file"
+        fi
+
+        mv "$TMP_FOLDER/$file" "$SSH_FOLDER/$file"
+        source "$UTIL_FOLDER/folder.delete"
+        folder_delete "$TMP_FOLDER"
+}
+

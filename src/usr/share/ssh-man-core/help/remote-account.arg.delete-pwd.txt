@@ -1,0 +1,4 @@
+This command deletes the password for a remote-account from the database. Example:{br}
+    {program} remote-account john@doe.com -delete-pwd{br}
+It does not delete the link to this remote account, if the link exists.
+

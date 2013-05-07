@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+# Restore a particular file from a backup zip
+
+function file_append
+{
+        zipPath="$1"
+        file="$2"
+        source "$UTIL_FOLDER/folder.create-tmp-copy"
+        folder_create_tmp_copy "$SSH_FOLDER"
+        unzip -q "$zipPath" "$file" -d "$TMP_FOLDER"
+
+        #copy the original file
+        if [[ -f "$SSH_FOLDER/$file" ]] ; then
+                cat "$SSH_FOLDER/$file" > "$TMP_FOLDER/$file.tmp"
+        else
+                touch "$TMP_FOLDER/$file.tmp"
+        fi
+
+        #add the backup file
+        cat "$TMP_FOLDER/$file" >> "$TMP_FOLDER/$file.tmp"
+
+        #remove duplicates
+        cat "$TMP_FOLDER/$file.tmp" | sort | uniq > "$TMP_FOLDER/$file"
+
+        source "$UTIL_FOLDER/file.delete"
+        file_delete "$SSH_FOLDER/$file" 
+
+        mv "$TMP_FOLDER/$file" "$SSH_FOLDER/$file"
+        source "$UTIL_FOLDER/folder.delete"
+        folder_delete "$TMP_FOLDER"
+}
+

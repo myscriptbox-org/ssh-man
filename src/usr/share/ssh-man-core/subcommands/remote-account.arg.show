@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+remoteAccount="$1"
+source "$UTIL_FOLDER/remote-account.validate"
+server=$(remote_account_validate "$remoteAccount")
+
+source "$UTIL_FOLDER/known-host.register-if-needed"
+known_host_register_if_needed "$server"
+
+#read password
+IFS=' ' read -r useragain password < <(cat "$SSH_FOLDER/remote_accounts" | grep "$remoteAccount")
+
+if [[ $password != '' ]] ; then
+	pwdValid=$($THIS_SCRIPT remote-account "$remoteAccount" -verify-pwd)
+else
+	password="<not available>"
+	pwdValid="<cannot check>"
+fi
+
+linkValid=$($THIS_SCRIPT remote-account "$remoteAccount" -verify-link)
+
+outputFormat="%-20s: %s\n"
+printf "$outputFormat" 'remote account' "$remoteAccount"
+printf "$outputFormat" 'password' "$password"
+printf "$outputFormat" 'pwd valid' "$pwdValid"
+printf "$outputFormat" 'link valid' "$linkValid"
+

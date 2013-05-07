@@ -1,0 +1,8 @@
+This command creates a zip backup of the ssh user-level configuration database and saves it to the filepath supplied in [arg].
+Examples:{br}
+    {program} db -backup mybackup{br}
+will create mybackup.zip{br}
+    {program} db -backup mybackup.zip{br}
+will also create mybackup.zip{br}
+The backup zip contains all user-level configuration database files used by {b}ssh{/b}.
+

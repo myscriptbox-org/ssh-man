@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+source "$UTIL_FOLDER/file.assert-exists"
+file_assert_exists "$SSH_FOLDER/remote_accounts"
+
+# switch off batch mode if it is enabled
+batchMode=$($THIS_SCRIPT config.batch-mode -show)
+if [[ $batchMode == 'yes' ]] ; then
+        $THIS_SCRIPT config.batch-mode -unset
+fi
+
+while read record; do
+        #read two space-separated fields
+        IFS=' ' read -r remoteAccount password < <(echo "$record")
+        $THIS_SCRIPT remote-account "$remoteAccount" -link  || true
+done < <(cat "$SSH_FOLDER/remote_accounts")
+
+# switch on batch mode if was is enabled
+if [[ $batchMode == 'yes' ]] ; then
+        $THIS_SCRIPT config.batch-mode -set
+fi
+

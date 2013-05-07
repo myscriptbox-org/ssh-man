@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+function folder_assert_exists
+{
+	folder="$1"
+	if [ ! -d "$folder" ] ; then
+		echo "ERROR: folder '$folder' does not exist" >&2
+		exit 1
+	fi
+}
+

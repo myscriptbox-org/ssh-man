@@ -1,0 +1,2 @@
+This command outputs {b}yes{/b} if batch mode is enabled and {b}no{/b} if not. Batch mode prevents {b}ssh{/b} from waiting for user input, causing the script to wait forever for user input that may never come.
+

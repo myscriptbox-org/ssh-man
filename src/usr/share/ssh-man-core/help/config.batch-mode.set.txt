@@ -1,0 +1,2 @@
+This command enables batch mode in the user's configuration. Batch mode prevents {b}ssh{/b} from waiting for user input, causing the script to wait forever for user input that may never come.
+

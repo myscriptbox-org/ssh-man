@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+#remove db if it exists
+function folder_delete
+{
+	folder="$1"
+	if [ -d "$folder" ] ; then
+		rm -rf "$folder"
+	fi
+}
+

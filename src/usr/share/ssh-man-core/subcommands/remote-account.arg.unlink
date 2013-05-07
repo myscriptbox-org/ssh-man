@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/file.assert-exists"
+file_assert_exists "$SSH_FOLDER/id_rsa.pub"
+
+source "$UTIL_FOLDER/own-keys.load"
+source "$UTIL_FOLDER/args.fix-whitespace"
+remoteAccount="$1"
+source "$UTIL_FOLDER/remote-account.validate"
+server=$(remote_account_validate "$remoteAccount")
+
+source "$UTIL_FOLDER/known-host.register-if-needed"
+known_host_register_if_needed "$server"
+
+#preparing to copy local key to remote authorized keys
+REMOTE_COMMAND='
+cat > ~/.ssh/email.tmp ;
+cat ~/.ssh/authorized_keys | grep -v $(cat ~/.ssh/email.tmp)  > ~/.ssh/authorized_keys.tmp ; 
+rm -f ~/.ssh/authorized_keys ;
+rm ~/.ssh/email.tmp ;
+mv ~/.ssh/authorized_keys.tmp ~/.ssh/authorized_keys
+'
+
+echo "unlinking $remoteAccount ... "
+
+#execute transfer
+$THIS_SCRIPT own-keys.email -show |  ssh -o "BatchMode yes" $remoteAccount "$REMOTE_COMMAND" || exit 1
+

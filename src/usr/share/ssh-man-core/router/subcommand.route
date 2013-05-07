@@ -1,0 +1,289 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+#
+# subcommand router
+#
+# Routes from the main script to a subcommand script
+#
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Released into the public domain
+#-------------------------------------------------------
+
+#-----------------------------------------
+# Usage function
+#-----------------------------------------
+function usage
+{
+	outputStream="$1"
+
+	if [[ $outputStream == '' || $outputStream == 'stderr' ]] ; then
+		exec 2>&1
+	fi
+
+	echo "USAGE: $THIS_SCRIPT [objectPath] [ objectId1 ... objectIdN ] -action [ actionArg1 .. actionArgM]"
+        echo -n "$THIS_SCRIPT --version, "
+        echo -n "$THIS_SCRIPT --help, "
+        echo "$THIS_SCRIPT --license"
+	echo "$THIS_SCRIPT [objectPath] --help for help on an object path"
+	objectPaths=$(find "$SUBCOMMANDS_FOLDER" -type f -exec basename {} \; 2> /dev/null | sed 's/\.arg$//' | \
+			sed 's/\.args$//' | sed 's/\(.*\)\..*$/\1/' | sed 's/\(\.arg\)*$//' | sed 's/\.args$//' | sort | uniq)
+	echo -n "Valid object paths: "
+	echo -n "$objectPaths" | tr '\n' ',' | sed 's/,/, /g'
+	echo '' 
+}
+
+#-----------------------------------------
+# handle --version
+#-----------------------------------------
+if [[ $1 == '--version' ]] ; then
+        version=$(cat $CORE_FOLDER/VERSION) #strips whitespace
+        echo $version
+        exit 0
+fi
+#-----------------------------------------
+# handle --license
+#-----------------------------------------
+if [[ $1 == '--license' ]] ; then
+        cat $CORE_FOLDER/LICENSE
+        exit 0
+fi
+#-----------------------------------------
+# handle --help
+#-----------------------------------------
+if [[ $1 == '--help' ]] ; then
+	usage
+	echo 
+	echo "subcommands available:"
+	i=0
+        while read line; do
+		((i++))
+		if [ $i -ne 1 ]; then
+			echo -n ", "
+		fi 
+		echo -n "$line"
+        done < <("$ROUTER_FOLDER/subcommands.synopsis")
+	echo ""
+	exit 0
+fi
+
+#-----------------------------------------
+# Process object_path
+#-----------------------------------------
+#the object path is for example: account.uplink or db.accounts or generally a.b.c.d ...
+#the object path is mandatory
+OBJECT_PATH="$1"
+
+if [[ $OBJECT_PATH == "" ]] ; then
+	echo "ERROR: object path required"  >&2
+	usage
+	exit 1
+fi
+
+# the object path must not be an option
+if [[ ${OBJECT_PATH:0:1} == "-" ]] ; then
+	echo "ERROR: object path '$OBJECT_PATH' may not start with '-'"  >&2
+	usage
+	exit 1
+fi
+
+#-----------------------------------------
+# Help for object path
+#-----------------------------------------
+if [ $# -eq 2 ] && [ "$2" == "--help" ] ; then
+
+        found='false'
+        while read objectPath; do
+                if [ "$objectPath" = "$OBJECT_PATH" ] ; then
+                        found='true'
+                fi
+        done < <(find "$SUBCOMMANDS_FOLDER" -type f -exec basename {} \; | sed 's/\.arg$//' | \
+			sed 's/\.args$//' | sed 's/\(.*\)\..*$/\1/' | sed 's/\.args$//' | sed 's/\(\.arg\)*$//')
+
+        if [ "$found" = "false" ] ; then
+        	echo "ERROR: object path '$OBJECT_PATH' not valid"  >&2
+                exit 1
+        fi
+
+	while read fileName; do
+		synopsis=$(echo "$fileName" | sed -e 's/^'$OBJECT_PATH'\.//'  \
+			| sed -e 's/\.txt$//' | sed -e 's/arg\./[obj] /g')
+
+                synopsisNoArgs=$(echo "$synopsis" | sed -e 's/\(\.arg\)*//g' \
+			| sed -e 's/\(arg\.\)*//g' |  sed -e 's/\.args$//')
+                #if $synopsisNoArgs still has a dot, it belongs to a longer objectPath
+                dotFound=$(echo "$synopsisNoArgs" | grep -E '\.')
+
+                if [ "$dotFound" = "" ] ; then
+                        synopsis=$(echo "$synopsis" | sed -e 's/\.arg$/ [arg]/g' |  sed -e 's/\.args$/ [args]/')
+                        subCommand=$(echo "$synopsis" | sed -e 's/\[.*\] //g' -e 's/\[.*\]//g')
+                        synopsis=$(echo "$synopsis" | sed -e 's/'"$subCommand"'/-'"$subCommand"'/')
+		        echo "$THIS_SCRIPT $OBJECT_PATH $synopsis"
+		        cat "$HELP_FOLDER/$fileName" \
+		        | sed  -e "s/{program}/$THIS_SCRIPT/g" \
+		        -e 's/{b}//g' -e 's|{/b}||g' \
+		        -e 's/{i}//g' -e 's|{/i}||g' \
+		        -e 's/{br}//' \
+		         | fold --spaces -w 80 | awk '{print "   " $0}'
+                fi
+
+	done < <(find "$HELP_FOLDER" -type f -exec basename {} \; | grep -e "^$OBJECT_PATH\.")
+
+        exit 0
+fi
+
+#-----------------------------------------
+# find action
+#-----------------------------------------
+ACTION=""
+ACTION_ARGNUM=1
+for arg in "$@"; do
+	if [[ ${arg:0:1} == '-' ]] ; then
+		ACTION=${arg:1}
+		break;
+	fi
+        ((ACTION_ARGNUM++))
+done
+
+if [[ $ACTION == "" ]] ; then
+	echo "ERROR: action required"  >&2
+	usage
+	exit 1
+fi
+
+#-----------------------------------------
+# search pattern for subcommand script
+#-----------------------------------------
+
+searchPattern=${OBJECT_PATH//\./\\..*}
+# (?=\.) ==> object path must be followed by a dot (lookahead)
+# (?<=\.) ==> action must be preceded by a dot (lookbehind)
+# the problem is that it could be the exactly the same dot as e.g. db.stash
+searchPattern="^${searchPattern}(?=\.).*(?<=\.)$ACTION.*"
+
+#-----------------------------------------
+# load script file name parser
+#-----------------------------------------
+
+source "$ROUTER_FOLDER/script-filename.parse"
+
+#-----------------------------------------
+# find script file
+#-----------------------------------------
+
+countMatches=0
+while read fileName; do
+	objectPathSegmentForFile=$(script_filename_objectpathsegment "$fileName")
+	actionForFile=$(script_filename_action "$fileName")
+        objectPathForFile=$(objectpathsegment_to_objectpath "$objectPathSegmentForFile")
+
+	#double-check that it is really the correct action; there could still be a mismatch
+	if [ "$actionForFile" = "$ACTION" ] && [ "$objectPathForFile" = "$OBJECT_PATH" ] ; then  
+		#store the match in the UPPERCASE variables we will use further in the script
+		OBJECT_PATH_SEGMENT="$objectPathSegmentForFile"
+		OBJECT_ARG_COUNT=$(objectpathsegment_argcount "$OBJECT_PATH_SEGMENT")
+		SCRIPT_FILENAME="$fileName"
+		countMatches=$((countMatches + 1))
+	fi
+
+done < <(ls "$SUBCOMMANDS_FOLDER" | grep -P "$searchPattern")
+
+if [ $countMatches -eq 0 ] ; then
+	echo "ERROR: $OBJECT_PATH -$ACTION does not exist."  >&2
+	exit 1
+fi
+
+if [ $countMatches -gt 1 ] ; then
+	echo "INTERNAL ERROR: $OBJECT_PATH -$ACTION matches more than one script."  >&2
+	exit 1
+fi
+
+#---------------------------------------------------------------
+# Verify that the object args there are not more object args 
+# than required
+#---------------------------------------------------------------
+
+#the action should follow the object path and the expected object argument count
+EXPECTED_ACTION_ARGNUM=$((2+$OBJECT_ARG_COUNT))
+ACTUAL_OBJECT_ARG_COUNT=$(($OBJECT_ARG_COUNT+$ACTION_ARGNUM-$EXPECTED_ACTION_ARGNUM))
+if [[ $ACTION_ARGNUM -gt  $EXPECTED_ACTION_ARGNUM ]] ; then
+	echo "ERROR: Too many object arguments to identify the object; " \
+                "expected number is $OBJECT_ARG_COUNT instead of $ACTUAL_OBJECT_ARG_COUNT" >&2
+	exit 1
+fi
+
+#---------------------------------------------------------------
+# Verify that the object args are present and are not options
+#---------------------------------------------------------------
+
+for objectArgNum in $(seq $OBJECT_ARG_COUNT); do
+	argNum=$((1+$objectArgNum))
+	arg=${!argNum}
+	if [[ $arg == '' ]] ; then
+		echo "ERROR: $OBJECT_ARG_COUNT object argument(s) expected to identify $OBJECT_PATH" >&2
+		exit 1
+	fi
+	if [[ ${arg:0:1} == '-' ]] ; then
+		echo "ERROR: $OBJECT_ARG_COUNT object argument(s) expected to identify the object, found action $arg instead " >&2
+		exit 1
+	fi
+done
+
+#---------------------------------------------------------------
+# Check if subcommand script file exists
+#---------------------------------------------------------------
+
+actionArg=$(script_filename_actionarg "$SCRIPT_FILENAME")
+
+if [[ $actionArg == '' ]] ; then
+	ACTION_ARG_REQUIRED=0
+else
+	ACTION_ARG_REQUIRED=1
+fi
+
+#---------------------------------------------------------------
+# Check if required action arg has been supplied
+#---------------------------------------------------------------
+
+#OBJECTPATH_ARGNUM=1
+#THEN THE OBJECT IDENTIFIERS FOLLOW
+#THEN THE ACTION
+#THEN THE OPTIONAL ACTION ARGUMENT
+
+LAST_OBJECT_ARGNUM=$((1+OBJECT_ARG_COUNT))
+ACTION_ARGNUM=$((1+LAST_OBJECT_ARGNUM))
+ACTIONARG_ARGNUM=$((ACTION_ARGNUM+1))
+ACTION_ARG=''
+
+if [[ $ACTION_ARG_REQUIRED == 1 ]] ; then
+	ACTION_ARG=${!ACTIONARG_ARGNUM}
+	if [[ $ACTION_ARG == '' ]] ; then
+		echo "ERROR: argument required for $OBJECT_PATH -$ACTION " >&2
+		exit 1
+	fi	
+fi
+
+
+#---------------------------------------------------------------
+# Now we prepare the call to the subcommand script
+#---------------------------------------------------------------
+SUBCOMMAND_PARTS=("$SUBCOMMANDS_FOLDER/$SCRIPT_FILENAME")
+for argNum in  $(seq 2 $LAST_OBJECT_ARGNUM); do
+	arg="${!argNum}"
+	SUBCOMMAND_PARTS+=("\"$arg\"")
+done
+
+for argNum in  $(seq $ACTIONARG_ARGNUM $#); do
+	arg="${!argNum}"
+	if [[ ${arg:0:1} == '-' ]]; then
+		SUBCOMMAND_PARTS+=("$arg")
+	else
+		SUBCOMMAND_PARTS+=("\"$arg\"")
+	fi
+done
+
+#---------------------------------------------------------------
+# Compute the subcommand script path
+#---------------------------------------------------------------
+SUBCOMMAND="${SUBCOMMAND_PARTS[@]}"
+

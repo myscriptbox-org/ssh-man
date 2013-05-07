@@ -1,0 +1,4 @@
+This command verifies if a password is still valid. Example:{br}
+    {program} remote-account john@doe.com -verify-pwd{br}
+The output is {b}valid{/b} or {b}invalid{/b}.
+

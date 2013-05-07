@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# ssh man
+#
+# Tool for the user to manage his ssh key database
+#
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+#-------------------------------------------------------
+# App-specific variables
+#-------------------------------------------------------
+export SSH_FOLDER=${SSH_FOLDER:-$HOME/.ssh}
+export SSH_STASHED_FOLDER=${SSH_STASHED_FOLDER:-$HOME/.ssh.stashed}
+#-------------------------------------------------------
+
+# The following is common boiler plate
+
+#-------------------------------------------------------
+# Basic location variables
+#-------------------------------------------------------
+export THIS_SCRIPT=$(basename "$0")
+THIS_FOLDER=$(dirname "$0")
+if [[ $THIS_FOLDER == "." ]]; then 
+	THIS_FOLDER="$PWD"
+fi
+export ROOT_FOLDER=$(dirname "$THIS_FOLDER")
+export CORE_FOLDER="$ROOT_FOLDER/share/$THIS_SCRIPT-core"
+#-------------------------------------------------------
+# The following folders are standard locations
+#-------------------------------------------------------
+export UTIL_FOLDER="$CORE_FOLDER/util"
+export ROUTER_FOLDER="$CORE_FOLDER/router"
+export SUBCOMMANDS_FOLDER="$CORE_FOLDER/subcommands"
+export HELP_FOLDER="$CORE_FOLDER/help"
+export FINAL_MSG_FOLDER="$CORE_FOLDER/final-msg"
+#-------------------------------------------------------
+# Route to the subcommand script
+#-------------------------------------------------------
+source "$ROUTER_FOLDER/subcommand.route"
+$SUBCOMMAND
+export SUBCOMMAND_RETCODE=$?
+source "$FINAL_MSG_FOLDER/command.final-output"
+#-------------------------------------------------------
+

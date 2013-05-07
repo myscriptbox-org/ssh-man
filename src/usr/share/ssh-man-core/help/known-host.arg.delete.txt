@@ -1,0 +1,4 @@
+This command will delete a known host. Example:{br}
+    {program} known-host myserver.com -delete{br}
+It will remove the known-host from the ssh user-level configuration database. ssh also stores the IP address for a host. If the IP address for the host has changed, you will have to remove this record and add the new record with '{program} known-host myserver.com -add'. Otherwise, ssh will refuse to connect to this host.
+

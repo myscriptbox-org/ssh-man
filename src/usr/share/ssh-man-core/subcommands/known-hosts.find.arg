@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+
+hostname="$1"
+tmpkeyfile="/tmp/$$.keyfile"
+
+#ssh-keygen will complain if the known_hosts file does not exist
+if [ ! -f "$SSH_FOLDER/known_hosts" ] ; then
+	touch "$SSH_FOLDER/known_hosts"
+fi
+
+#write key to temporary file; ssh-key cannot write to stdout, apparently
+ssh-keygen -F "$hostname" > "$tmpkeyfile"
+key=$(cat "$tmpkeyfile")
+
+#if a key was really found, produce its fingerprint
+if [ "$key" != "" ] ; then
+	ssh-keygen -lf "$tmpkeyfile"
+fi
+
+#get rid of the temporary file
+rm -f "$tmpkeyfile"
+

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+remoteAccount="$1"
+
+source "$UTIL_FOLDER/remote-account.validate"
+server=$(remote_account_validate "$remoteAccount")
+
+source "$UTIL_FOLDER/file.delete-record"
+file_delete_record "$SSH_FOLDER/remote_accounts" "$remoteAccount" 
+chmod 0600 "$SSH_FOLDER/remote_accounts"
+

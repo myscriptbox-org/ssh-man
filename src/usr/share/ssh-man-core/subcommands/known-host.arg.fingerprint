@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+
+hostname="$1"
+tmpfile="/tmp/$$.fingerprint"
+
+ssh-keyscan "$hostname" > "$tmpfile"  2> /dev/null
+
+#ssh-keyscan may have failed
+key=$(cat "$tmpfile")
+if [ "$key" = "" ] ; then
+        echo "ERROR: cannot read fingerprint for host '$hostname'" >&2
+        rm -f "$tmpfile"
+        exit 1
+fi
+
+ssh-keygen -l -f "$tmpfile" #show fingerprint
+rm -f "$tmpfile"
+

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/folder.assert-exists"
+folder_assert_exists "$SSH_FOLDER"
+
+source "$UTIL_FOLDER/folder.delete"
+folder_delete "$SSH_STASHED_FOLDER"
+
+cp -aR "$SSH_FOLDER" "$SSH_STASHED_FOLDER"
+

@@ -1,0 +1,2 @@
+This command verifies the links for all remote-accounts in a database.
+

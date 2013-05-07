@@ -1,0 +1,2 @@
+This command outputs the own public key. 
+

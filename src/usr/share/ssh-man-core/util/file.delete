@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+function file_delete
+{
+	filePath="$1"
+	if [ -f "$filePath" ] ; then
+		rm -f "$filePath"
+	fi
+}
+

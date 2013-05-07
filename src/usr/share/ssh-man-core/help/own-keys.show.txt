@@ -1,0 +1,2 @@
+This command shows the fingerprint of the public key in the database.
+

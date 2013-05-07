@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#-------------------------------------------------------
+# Written by Erik Poupaert
+# Phnom Penh, Cambodia, March 2013
+# Licensed under the General Public License (GPL)
+#-------------------------------------------------------
+
+source "$UTIL_FOLDER/args.fix-whitespace"
+
+hostname="$1"
+ipaddress=$(nslookup "$hostname" | tail -n+6 | head -n1 | sed 's/.*: \(.*\)/\1/')
+
+if [[ $ipaddress == "" ]] ; then
+        echo "ERROR: cannot resolve host '$hostname'" >&2
+        exit 1
+fi
+
+ssh-keygen -R "$hostname" -f "$SSH_FOLDER/known_hosts" > /dev/null 2>&1 #remove known hostname
+ssh-keygen -R "$ipaddress" -f "$SSH_FOLDER/known_hosts" > /dev/null 2>&1 #remove known IP address
+ssh-keygen -R "$hostname","$ipaddress" -f "$SSH_FOLDER/known_hosts" > /dev/null 2>&1 #remove both
+
+#store IP address
+ssh-keyscan -H "$ipaddress" >> "$SSH_FOLDER/known_hosts"  2> /dev/null #add known IP address
+err1=$? #store error code
+
+#store hostname
+ssh-keyscan -H "$hostname" >> "$SSH_FOLDER/known_hosts"  2> /dev/null #add known hostname
+err2=$? #store error code
+
+#store combination hostname and IP address
+ssh-keyscan -H "$hostname","$ipaddress" >> "$SSH_FOLDER/known_hosts" 2> /dev/null #add both
+err3=$? #store error code
+
+if [ $err1 -ne 0 ] || [ $err2 -ne 0 ] || [ $err3 -ne 0 ] ; then
+        echo "ERROR: cannot store known host '$hostname'"
+        exit 1
+fi
+
+rm -f "$SSH_FOLDER/known_hosts.old"
+
