@@ -1,4 +1,4 @@
-# man page for ssh-man.
+# man page for ssh-man
 ## NAME 
 **ssh-man** manages the ssh key database and ssh links to remote accounts
 
@@ -261,3 +261,4 @@ Report bugs to: erik@sankuru.biz
 
 # COPYRIGHT
 Licensed under GPL
+folder/generate-readme-stdout executed.
