@@ -11,8 +11,17 @@ hostname="$1"
 ipaddress=$(nslookup "$hostname" | tail -n+6 | head -n1 | sed 's/.*: \(.*\)/\1/')
 
 if [[ $ipaddress == "" ]] ; then
-        echo "ERROR: cannot resolve host '$hostname'" >&2
-        exit 1
+        if [ ! $(which msb-simul-server) = "" ] ; then
+                if [ $(msb-simul-server etc-hosts.domain "$hostname" -exists) = "yes" ] ; then
+                        ipaddress='127.0.0.1'
+                else
+                        echo "ERROR: cannot resolve host '$hostname'" >&2
+                        exit 1
+                fi
+        else
+                echo "ERROR: cannot resolve host '$hostname'" >&2
+                exit 1
+        fi
 fi
 
 ssh-keygen -R "$hostname" -f "$SSH_FOLDER/known_hosts" > /dev/null 2>&1 #remove known hostname
