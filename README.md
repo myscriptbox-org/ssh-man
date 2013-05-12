@@ -260,5 +260,4 @@ Erik Poupaert <erik@sankuru.biz>
 Report bugs to: erik@sankuru.biz
 
 # COPYRIGHT
-Licensed under GPL
-folder/generate-readme-stdout executed.
+Licensed under: GPL
