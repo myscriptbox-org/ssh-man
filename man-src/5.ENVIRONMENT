@@ -1,6 +1,6 @@
 [[SSH_FOLDER]]
 By default, {program} will look for the ssh database in ~/.ssh. You can override this with the SSH_FOLDER environment variable. Example:{br}
-    SSH_FOLDER=/var/test/myssh {program} ...
+    SSH_FOLDER=/var/test/myssh {program} ...{br}
 Setting the variable just before invoking {program} will point the SSH_FOLDER elsewhere.
 [[SSH_STASHED_FOLDER]]
 By default, {program} will stash the database in ~/.ssh.stashed. You can override this with the SSH_STASHED_FOLDER environment variable. Example:{br}
