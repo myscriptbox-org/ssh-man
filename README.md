@@ -53,11 +53,11 @@ shows the program's version.
 ### --license
 shows the program's license.
 
-### config.batch-mode -show
-This command outputs **yes** if batch mode is enabled and **no** if not. Batch mode prevents **ssh** from waiting for user input, causing the script to wait forever for user input that may never come.
-
 ### config.batch-mode -set
 This command enables batch mode in the user's configuration. Batch mode prevents **ssh** from waiting for user input, causing the script to wait forever for user input that may never come.
+
+### config.batch-mode -show
+This command outputs **yes** if batch mode is enabled and **no** if not. Batch mode prevents **ssh** from waiting for user input, causing the script to wait forever for user input that may never come.
 
 ### config.batch-mode -unset
 This command disables batch mode in the user's configuration. It is used by the '**ssh-man** remote-account -link' command to supply the password required for linking a remote server. In batch mode, it is not possible to supply a password to **ssh**.
@@ -83,6 +83,12 @@ will create mybackup.zip
 will also create mybackup.zip  
 The backup zip contains all user-level configuration database files used by **ssh**.
 
+### db -delete
+This command deletes the entire ssh user-level configuration database.
+
+### db -unstash
+This command puts back the copy of the ssh user-level configuration database made earlier with '**ssh-man** db -stash'. Use it if you want to undo the changes made since the last time you stashed the database.
+
 ### db -restore [arg]
 This command restores the ssh user-level configuration database from the zip file supplied as an argument. Example:  
     **ssh-man** db -restore mybackup.zip  
@@ -90,15 +96,6 @@ will restore mybackup.zip.
 
 ### db -stash
 This command will create a local copy of the ssh user-level configuration database. Use it if you are not sure what effect your changes will have. You can put back the version stashed with: '**ssh-man** db -unstash'.
-
-### db -delete
-This command deletes the entire ssh user-level configuration database.
-
-### db -unstash
-This command puts back the copy of the ssh user-level configuration database made earlier with '**ssh-man** db -stash'. Use it if you want to undo the changes made since the last time you stashed the database.
-
-### known-host [obj] -fingerprint
-This command prints the public key finger print for the known host.
 
 ### known-host [obj] -add
 This command adds a known host to the database. Example:  
@@ -110,25 +107,28 @@ This command will delete a known host. Example:
     **ssh-man** known-host myserver.com -delete  
 It will remove the known-host from the ssh user-level configuration database. ssh also stores the IP address for a host. If the IP address for the host has changed, you will have to remove this record and add the new record with '**ssh-man** known-host myserver.com -add'. Otherwise, ssh will refuse to connect to this host.
 
+### known-host [obj] -fingerprint
+This command prints the public key finger print for the known host.
+
+### known-hosts -find [arg]
+This command checks if a known host is registered in the database. If so, it returns the fingerprint of its public key. If not, it returns nothing.
+
 ### known-hosts -append [arg]
 This command appends the known hosts from a backup file to the database.
+
+### known-hosts -delete
+This command deletes all the known hosts in the database.
 
 ### known-hosts -replace [arg]
 This command replaces the known hosts in the database from the known hosts in a backup file. Example:  
     **ssh-man** known-hosts -replace mybackup.zip  
 
-### known-hosts -delete
-This command deletes all the known hosts in the database.
-
-### known-hosts -find [arg]
-This command checks if a known host is registered in the database. If so, it returns the fingerprint of its public key. If not, it returns nothing.
-
-### own-keys -show
-This command shows the fingerprint of the public key in the database.
-
 ### own-keys -replace [arg]
 This command replaces the own keys in the database by the ones in the given backup file. Example:  
     **ssh-man** own-keys -replace mybackup.zip
+
+### own-keys -show
+This command shows the fingerprint of the public key in the database.
 
 ### own-keys -create
 This command creates a new set of keys, private and public. If the database already has keys, they will be replaced.
@@ -148,35 +148,30 @@ This command outputs the own private key.
 ### own-keys.public -show
 This command outputs the own public key. 
 
-### remote-account [obj] -link
-This command will link the device to a remote account. Example:  
-    **ssh-man** remote-account john@doe.com -link  
-This is effected by copying the public own key to the authorized keys in the remote account. The result is that you may login from this device into the account on the other device without supplying a password.
-
-### remote-account [obj] -set-pwd [arg]
-This command adds or replaces a remote account. Example:  
-    **ssh-man** remote-account john@doe.com -set-pwd 'john125!'  
-Use quotes around the password if it contains non alphanumeric characters. From there, passwordless login will be possible from this database.
+### remote-account [obj] -verify-pwd
+This command verifies if a password is still valid. Example:  
+    **ssh-man** remote-account john@doe.com -verify-pwd  
+The output is **valid** or **invalid**.
 
 ### remote-account [obj] -unlink
 This command unlinks a remote account. Example:  
     **ssh-man** remote-account john@doe.com -unlink  
 It does this by removing the public key from the account's authorized keys. From there, passwordless login will no longer be possible from this database.
 
-### remote-account [obj] -delete-pwd
-This command deletes the password for a remote-account from the database. Example:  
-    **ssh-man** remote-account john@doe.com -delete-pwd  
-It does not delete the link to this remote account, if the link exists.
-
 ### remote-account [obj] -verify-link
 This command verifies if a link is still valid. Example:  
     **ssh-man** remote-account john@doe.com -verify-link  
 The output is **valid** or **invalid**.
 
-### remote-account [obj] -verify-pwd
-This command verifies if a password is still valid. Example:  
-    **ssh-man** remote-account john@doe.com -verify-pwd  
-The output is **valid** or **invalid**.
+### remote-account [obj] -delete-pwd
+This command deletes the password for a remote-account from the database. Example:  
+    **ssh-man** remote-account john@doe.com -delete-pwd  
+It does not delete the link to this remote account, if the link exists.
+
+### remote-account [obj] -set-pwd [arg]
+This command adds or replaces a remote account. Example:  
+    **ssh-man** remote-account john@doe.com -set-pwd 'john125!'  
+Use quotes around the password if it contains non alphanumeric characters. From there, passwordless login will be possible from this database.
 
 ### remote-account [obj] -show
 This command shows the status of a remote account. Example:  
@@ -187,6 +182,20 @@ This command shows the status of a remote account. Example:
     link valid          : invalid  
 The command also verifies if the password is valid and if the link is valid.
 
+### remote-account [obj] -link
+This command will link the device to a remote account. Example:  
+    **ssh-man** remote-account john@doe.com -link  
+This is effected by copying the public own key to the authorized keys in the remote account. The result is that you may login from this device into the account on the other device without supplying a password.
+
+### remote-accounts -unlink
+This command unlinks all remote accounts in the database.
+
+### remote-accounts -verify-links
+This command verifies the links for all remote-accounts in a database.
+
+### remote-accounts -link
+This command links all the remote accounts in the database.
+
 ### remote-accounts -delete-pwd
 This command deletes all the passwords for the remote accounts from the database. It does not delete their links, however.
 
@@ -194,8 +203,9 @@ This command deletes all the passwords for the remote accounts from the database
 This command appends remote accounts from a backup file to the database. Example:  
     **ssh-man** remote-accounts -append mybackup.zip
 
-### remote-accounts -verify-links
-This command verifies the links for all remote-accounts in a database.
+### remote-accounts -replace [arg]
+This command replaces the remote accounts in the database by the ones in a backup file. Example:  
+    **ssh-man** remote-accounts -replace mybackup.zip
 
 ### remote-accounts -show
 This command lists all the remote accounts in the database. Example output:  
@@ -203,30 +213,20 @@ This command lists all the remote accounts in the database. Example output:
     john@doe.com        john125!     
     john@myserv.com     john122??
 
-### remote-accounts -replace [arg]
-This command replaces the remote accounts in the database by the ones in a backup file. Example:  
-    **ssh-man** remote-accounts -replace mybackup.zip
-
 ### remote-accounts -verify-pwd
 This command verifies the passwords for all remote accounts in the database.
 
-### remote-accounts -link
-This command links all the remote accounts in the database.
-
-### remote-accounts -unlink
-This command unlinks all remote accounts in the database.
+### stash -delete
+This command deletes the stash.
 
 ### stash -exists
 This command checks if the stash exists. It outputs "yes", if it exists, and "no", if it doesn't.
 
 
-### stash -delete
-This command deletes the stash.
-
 ## ENVIRONMENT 
 ### SSH_FOLDER
 By default, **ssh-man** will look for the ssh database in ~/.ssh. You can override this with the SSH_FOLDER environment variable. Example:  
-    SSH_FOLDER=/var/test/myssh **ssh-man** ...
+    SSH_FOLDER=/var/test/myssh **ssh-man** ...  
 Setting the variable just before invoking **ssh-man** will point the SSH_FOLDER elsewhere.
 ### SSH_STASHED_FOLDER
 By default, **ssh-man** will stash the database in ~/.ssh.stashed. You can override this with the SSH_STASHED_FOLDER environment variable. Example:  
