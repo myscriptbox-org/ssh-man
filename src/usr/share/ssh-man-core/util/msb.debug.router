@@ -5,9 +5,11 @@
 # Licensed under the General Public License (GPL)
 #-------------------------------------------------------
 
-if [ $MSB_DEBUG_ROUTER -eq 1 ] ; then
-	set -x
-else
-	set +x
+if [ -n "$MSB_DEBUG_ROUTER" ] ; then
+	if [ $MSB_DEBUG_ROUTER -eq 1 ] ; then
+		set -x
+	else
+		set +x
+	fi
 fi
 
