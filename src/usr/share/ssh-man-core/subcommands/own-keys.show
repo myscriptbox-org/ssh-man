@@ -4,7 +4,7 @@
 # Phnom Penh, Cambodia, March 2013
 # Licensed under the General Public License (GPL)
 #-------------------------------------------------------
-
+source "$UTIL_FOLDER/msb.debug"
 #replace 2 spaces by one to be compatible with the output of ssh-add -l
 ssh-keygen -lf "$SSH_FOLDER/id_rsa.pub" | sed 's/  / /'
 

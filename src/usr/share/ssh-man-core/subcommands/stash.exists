@@ -4,7 +4,7 @@
 # Phnom Penh, Cambodia, March 2013
 # Licensed under the General Public License (GPL)
 #-------------------------------------------------------
-
+source "$UTIL_FOLDER/msb.debug"
 if [ -d "$SSH_STASHED_FOLDER" ] ; then
 	echo "yes"
 else

@@ -4,7 +4,7 @@
 # Phnom Penh, Cambodia, March 2013
 # Licensed under the General Public License (GPL)
 #-------------------------------------------------------
-
+source "$UTIL_FOLDER/msb.debug"
 # switch off batch mode if it is enabled
 batchMode=$($THIS_SCRIPT config.batch-mode -show)
 if [[ $batchMode == 'yes' ]] ; then

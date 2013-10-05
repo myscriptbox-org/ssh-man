@@ -4,6 +4,7 @@
 # Phnom Penh, Cambodia, March 2013
 # Licensed under the General Public License (GPL)
 #-------------------------------------------------------
+source "$UTIL_FOLDER/msb.debug"
 source "$UTIL_FOLDER/remote-accounts.verify"
 remote_accounts_verify -verify-link
 

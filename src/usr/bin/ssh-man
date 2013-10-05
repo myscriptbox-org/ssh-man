@@ -39,6 +39,7 @@ export FINAL_MSG_FOLDER="$CORE_FOLDER/final-msg"
 #-------------------------------------------------------
 # Route to the subcommand script
 #-------------------------------------------------------
+source "$UTIL_FOLDER/msb.debug.router"
 source "$ROUTER_FOLDER/subcommand.route"
 $SUBCOMMAND
 export SUBCOMMAND_RETCODE=$?

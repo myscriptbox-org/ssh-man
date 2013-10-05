@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 #-------------------------------------------------------
 # Written by Erik Poupaert
-# Phnom Penh, Cambodia, March 2013
+# Phnom Penh, Cambodia, October 2013
 # Licensed under the General Public License (GPL)
 #-------------------------------------------------------
-source "$UTIL_FOLDER/msb.debug"
-source "$UTIL_FOLDER/file.replace-record"
-file_replace_record "$SSH_FOLDER/config" "BatchMode" "BatchMode no"
+
+if [ $MSB_DEBUG_ROUTER -eq 1 ] ; then
+	set -x
+else
+	set +x
+fi
 

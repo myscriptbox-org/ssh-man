@@ -4,7 +4,7 @@
 # Phnom Penh, Cambodia, March 2013
 # Licensed under the General Public License (GPL)
 #-------------------------------------------------------
-
+source "$UTIL_FOLDER/msb.debug"
 source "$UTIL_FOLDER/folder.assert-exists"
 folder_assert_exists "$SSH_FOLDER"
 
